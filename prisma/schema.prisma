@@ -37,6 +37,7 @@ model Product {
   description     String
   price           Int
   tags            String[]
+  favoriteCount   Int
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
   ProductComments ProductComment[]

@@ -1,5 +1,5 @@
-import { PrismaClient } from '@prisma/client';
-import { ARTICLES, COMMENTS, PRODUCTS, PRODUCTCOMMENTS } from './mock.js';
+import { PrismaClient } from "@prisma/client";
+import { ARTICLES, COMMENTS, PRODUCTS, PRODUCTCOMMENTS } from "./mock.js";
 const prisma = new PrismaClient();
 
 async function main() {
