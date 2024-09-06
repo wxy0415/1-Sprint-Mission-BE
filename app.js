@@ -245,8 +245,7 @@ app.get("/products", async (req, res) => {
     ],
   };
 
-  const products = await prisma.product
-    .find(searchQuery)
+  const products = await PRODUCTS.find(searchQuery)
     .sort(sortOption)
     .limit(limit)
     .skip(Number(offset))
@@ -259,7 +258,7 @@ app.get(
   "/products/:id",
   asyncHandler(async (req, res) => {
     const id = req.params.id;
-    const product = await prisma.product.findById(id);
+    const product = await PRODUCTS.findById(id);
     if (product) {
       res.send(product);
     } else {
@@ -271,7 +270,7 @@ app.get(
 app.post(
   "/products",
   asyncHandler(async (req, res) => {
-    const newProduct = await prisma.product.create(req.body);
+    const newProduct = await PRODUCTS.create(req.body);
     res.status(201).send(newProduct);
   })
 );
@@ -280,7 +279,7 @@ app.patch(
   "/products/:id",
   asyncHandler(async (req, res) => {
     const id = req.params.id;
-    const product = await prisma.product.findById(id);
+    const product = await PRODUCTS.findById(id);
     if (product) {
       Object.keys(req.body).forEach((key) => {
         product[key] = req.body[key];
@@ -297,7 +296,7 @@ app.delete(
   "/products/:id",
   asyncHandler(async (req, res) => {
     const id = Number(req.params.id);
-    const product = await prisma.product.findByIdAndDelete(id);
+    const product = await PRODUCTS.findByIdAndDelete(id);
     if (product) {
       res.sendStatus(204);
     } else {
