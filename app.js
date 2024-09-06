@@ -1,8 +1,9 @@
-import express from 'express';
-import * as dotenv from 'dotenv';
-import { assert } from 'superstruct';
-import { PrismaClient, Prisma } from '@prisma/client';
-import { CreateArticle, PatchArticle } from './structs.js';
+import express from "express";
+import * as dotenv from "dotenv";
+import { assert } from "superstruct";
+import { PrismaClient, Prisma } from "@prisma/client";
+import { CreateArticle, PatchArticle } from "./structs.js";
+import { PRODUCTS } from "./prisma/seeding/mock.js";
 
 dotenv.config();
 const prisma = new PrismaClient();
@@ -16,9 +17,15 @@ function asyncHandler(handler) {
     try {
       await handler(req, res);
     } catch (e) {
-      if (e.name === 'StructError' || e instanceof Prisma.PrismaClientValidationError) {
+      if (
+        e.name === "StructError" ||
+        e instanceof Prisma.PrismaClientValidationError
+      ) {
         res.status(400).send({ message: e.message });
-      } else if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2025') {
+      } else if (
+        e instanceof Prisma.PrismaClientKnownRequestError &&
+        e.code === "P2025"
+      ) {
         res.sendStatus(404);
       } else {
         res.status(500).send({ message: e.message });
@@ -27,10 +34,9 @@ function asyncHandler(handler) {
   };
 }
 
-
 // 게시물 등록
 app.post(
-  '/article',
+  "/article",
   asyncHandler(async (req, res) => {
     assert(req.body, CreateArticle);
     const article = await prisma.article.create({
@@ -42,7 +48,7 @@ app.post(
 
 // 상세 게시물 조회
 app.get(
-  '/article/:id',
+  "/article/:id",
   asyncHandler(async (req, res) => {
     const { id } = req.params;
     const article = await prisma.article.findUniqueOrThrow({
@@ -60,7 +66,7 @@ app.get(
 
 // 상세 게시물 수정
 app.patch(
-  '/article/:id',
+  "/article/:id",
   asyncHandler(async (req, res) => {
     assert(req.body, PatchArticle);
     const { id } = req.params;
@@ -74,7 +80,7 @@ app.patch(
 
 // 상세 스터디 삭제
 app.delete(
-  '/article/:id',
+  "/article/:id",
   asyncHandler(async (req, res) => {
     const { id } = req.params;
     await prisma.article.delete({
@@ -86,19 +92,19 @@ app.delete(
 
 // 게시물 목록 조회
 app.get(
-  '/article',
+  "/article",
   asyncHandler(async (req, res) => {
-    const { offset = 0, limit = 5, order = 'newest', search = '' } = req.query;
+    const { offset = 0, limit = 5, order = "newest", search = "" } = req.query;
     let orderBy;
     switch (order) {
-      case 'oldest':
-        orderBy = { createdAt: 'asc' };
+      case "oldest":
+        orderBy = { createdAt: "asc" };
         break;
-      case 'newest':
-        orderBy = { createdAt: 'desc' };
+      case "newest":
+        orderBy = { createdAt: "desc" };
         break;
       default:
-        orderBy = { createdAt: 'desc' };
+        orderBy = { createdAt: "desc" };
     }
     const articles = await prisma.article.findMany({
       select: {
@@ -108,7 +114,10 @@ app.get(
         createdAt: true,
       },
       where: {
-        OR: [{ content: { contains: search } }, { title: { contains: search } }],
+        OR: [
+          { content: { contains: search } },
+          { title: { contains: search } },
+        ],
       },
       orderBy,
       skip: parseInt(offset),
@@ -120,7 +129,7 @@ app.get(
 
 // 게시물 댓글 등록
 app.post(
-  '/article/:id/comment',
+  "/article/:id/comment",
   asyncHandler(async (req, res) => {
     const { id } = req.params;
     const comment = await prisma.comment.create({
@@ -135,7 +144,7 @@ app.post(
 
 // 중고마켓 댓글 등록
 app.post(
-  '/product/:id/comment',
+  "/product/:id/comment",
   asyncHandler(async (req, res) => {
     const { id } = req.params;
     const comment = await prisma.productComment.create({
@@ -149,7 +158,7 @@ app.post(
 );
 // 게시물 댓글 수정
 app.patch(
-  '/comment/:id',
+  "/comment/:id",
   asyncHandler(async (req, res) => {
     const { id } = req.params;
     const updateComment = await prisma.comment.update({
@@ -162,7 +171,7 @@ app.patch(
 
 // 게시물 삭제
 app.delete(
-  '/comment/:id',
+  "/comment/:id",
   asyncHandler(async (req, res) => {
     const { id } = req.params;
     await prisma.comment.delete({
@@ -174,7 +183,7 @@ app.delete(
 
 // 자유게시판 댓글 목록 조회
 app.get(
-  '/comment',
+  "/comment",
   asyncHandler(async (req, res) => {
     const { cursor, limit = 5 } = req.query;
     const parsedLimit = parseInt(limit);
@@ -189,7 +198,7 @@ app.get(
       skip: cursor ? 1 : 0,
       cursor: cursor ? { id: cursor } : undefined,
       orderBy: {
-        createdAt: 'desc',
+        createdAt: "desc",
       },
     });
 
@@ -199,7 +208,7 @@ app.get(
 
 // 중고마켓 댓글 목록 조회
 app.get(
-  '/productcomment',
+  "/productcomment",
   asyncHandler(async (req, res) => {
     const { cursor, limit = 5 } = req.query;
     const parsedLimit = parseInt(limit);
@@ -214,54 +223,64 @@ app.get(
       skip: cursor ? 1 : 0,
       cursor: cursor ? { id: cursor } : undefined,
       orderBy: {
-        createdAt: 'desc',
+        createdAt: "desc",
       },
     });
 
-    res.send(comments);
+    res.send(productComment);
+  })
+);
 
-app.get('/products', async (req, res) => {
-  const { sort = 'recent', limit, offset = 0, search = '' } = req.query;
+app.get("/products", async (req, res) => {
+  const { sort = "recent", limit, offset = 0, search = "" } = req.query;
 
   const sortOption = {
-    createdAt: sort === 'recent' ? 'desc' : 'asc',
+    createdAt: sort === "recent" ? "desc" : "asc",
   };
 
   const searchQuery = {
-    $or: [{ name: { $regex: search, $options: 'i' } }, { description: { $regex: search, $options: 'i' } }],
+    $or: [
+      { name: { $regex: search, $options: "i" } },
+      { description: { $regex: search, $options: "i" } },
+    ],
   };
 
-  const products = await Product.find(searchQuery).sort(sortOption).limit(limit).skip(Number(offset)).select('_id name price createdAt');
+  const products = await prisma.product
+    .find(searchQuery)
+    .sort(sortOption)
+    .limit(limit)
+    .skip(Number(offset))
+    .select("_id name price createdAt");
 
   res.send(products);
 });
 
 app.get(
-  '/products/:id',
+  "/products/:id",
   asyncHandler(async (req, res) => {
     const id = req.params.id;
-    const product = await Product.findById(id);
+    const product = await prisma.product.findById(id);
     if (product) {
       res.send(product);
     } else {
-      res.status(404).send({ message: 'Cannot find given id. ' });
+      res.status(404).send({ message: "Cannot find given id. " });
     }
   })
 );
 
 app.post(
-  '/products',
+  "/products",
   asyncHandler(async (req, res) => {
-    const newProduct = await Product.create(req.body);
+    const newProduct = await prisma.product.create(req.body);
     res.status(201).send(newProduct);
   })
 );
 
 app.patch(
-  '/products/:id',
+  "/products/:id",
   asyncHandler(async (req, res) => {
     const id = req.params.id;
-    const product = await Product.findById(id);
+    const product = await prisma.product.findById(id);
     if (product) {
       Object.keys(req.body).forEach((key) => {
         product[key] = req.body[key];
@@ -269,22 +288,22 @@ app.patch(
       await product.save();
       res.send(product);
     } else {
-      res.status(404).send({ message: 'Cannot find given id. ' });
+      res.status(404).send({ message: "Cannot find given id. " });
     }
   })
 );
 
 app.delete(
-  '/products/:id',
+  "/products/:id",
   asyncHandler(async (req, res) => {
     const id = Number(req.params.id);
-    const product = await Product.findByIdAndDelete(id);
+    const product = await prisma.product.findByIdAndDelete(id);
     if (product) {
       res.sendStatus(204);
     } else {
-      res.status(404).send({ message: 'Cannot find given id. ' });
+      res.status(404).send({ message: "Cannot find given id. " });
     }
   })
 );
 
-app.listen(process.env.PORT || 3000, () => console.log('Server Started'));
+app.listen(process.env.PORT || 3000, () => console.log("Server Started"));
