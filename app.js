@@ -3,13 +3,13 @@ import * as dotenv from "dotenv";
 import { assert } from "superstruct";
 import { PrismaClient, Prisma } from "@prisma/client";
 import { CreateArticle, PatchArticle } from "./structs.js";
-import { PRODUCTS } from "./prisma/seeding/mock.js";
 
 dotenv.config();
 const prisma = new PrismaClient();
 
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 
 function asyncHandler(handler) {
@@ -91,41 +91,35 @@ app.delete(
 );
 
 // 게시물 목록 조회
-app.get(
-  "/article",
-  asyncHandler(async (req, res) => {
-    const { offset = 0, limit = 5, order = "newest", search = "" } = req.query;
-    let orderBy;
-    switch (order) {
-      case "oldest":
-        orderBy = { createdAt: "asc" };
-        break;
-      case "newest":
-        orderBy = { createdAt: "desc" };
-        break;
-      default:
-        orderBy = { createdAt: "desc" };
-    }
-    const articles = await prisma.article.findMany({
+app.get("/products", async (req, res) => {
+  try {
+    const { sort = "recent", limit, offset = 0, search = "" } = req.query;
+    const sortOption = {
+      createdAt: sort === "recent" ? "desc" : "asc",
+    };
+    const searchQuery = {
+      OR: [
+        { name: { contains: search } },
+        { description: { contains: search } },
+      ],
+    };
+    const products = await prisma.product.findMany({
+      where: searchQuery,
+      orderBy: sortOption,
+      take: Number(limit),
+      skip: Number(offset),
       select: {
         id: true,
-        title: true,
-        content: true,
-        createdAt: true,
+        name: true,
+        price: true,
+        favoriteCount: true,
       },
-      where: {
-        OR: [
-          { content: { contains: search } },
-          { title: { contains: search } },
-        ],
-      },
-      orderBy,
-      skip: parseInt(offset),
-      take: parseInt(limit),
     });
-    res.send(articles);
-  })
-);
+    res.send(products);
+  } catch (error) {
+    console.error(123123);
+  }
+});
 
 // 게시물 댓글 등록
 app.post(
@@ -169,7 +163,7 @@ app.patch(
   })
 );
 
-// 게시물 삭제
+// 게시물 댓글 삭제
 app.delete(
   "/comment/:id",
   asyncHandler(async (req, res) => {
@@ -239,18 +233,21 @@ app.get("/products", async (req, res) => {
   };
 
   const searchQuery = {
-    $or: [
-      { name: { $regex: search, $options: "i" } },
-      { description: { $regex: search, $options: "i" } },
-    ],
+    OR: [{ name: { contains: search } }, { description: { contains: search } }],
   };
 
-  const products = await prisma.product
-    .find(searchQuery)
-    .sort(sortOption)
-    .limit(limit)
-    .skip(Number(offset))
-    .select("_id name price createdAt");
+  const products = await prisma.product.findMany({
+    where: searchQuery,
+    orderBy: sortOption,
+    take: Number(limit),
+    skip: Number(offset),
+    select: {
+      id: true,
+      name: true,
+      price: true,
+      favoriteCount: true,
+    },
+  });
 
   res.send(products);
 });

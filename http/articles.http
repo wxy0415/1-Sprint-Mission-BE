@@ -30,4 +30,18 @@ GET http://localhost:3000/article?limit=6&offset=0&order=newest
 
 ###
 
-GET https://one-sprint-mission-be-4229.onrender.com/article
+GET https://one-sprint-mission-be-svjo.onrender.com/article
+
+###
+POST https://one-sprint-mission-be-svjo.onrender.com/article
+Content-Type: application/json
+
+{
+  "title": "맥북 16인치 16기가 1테라 정도 사양이면 얼마에 팔아야하나요?",
+  "content": "제곧내"
+}
+
+###
+
+GET https://one-sprint-mission-be-svjo.onrender.com/products
+
