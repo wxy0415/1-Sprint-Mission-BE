@@ -27,3 +27,7 @@ DELETE http://localhost:3000/article/8f1ea036-cd80-47d4-9c95-5c1894c27912
 ###
 
 GET http://localhost:3000/article?limit=6&offset=0&order=newest
+
+###
+
+GET https://one-sprint-mission-be-4229.onrender.com/article
