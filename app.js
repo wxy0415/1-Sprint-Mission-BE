@@ -256,7 +256,7 @@ app.get(
   "/products/:id",
   asyncHandler(async (req, res) => {
     const id = req.params.id;
-    const product = await prisma.product.findById(id);
+    const product = await prisma.product.findUnique(id);
     if (product) {
       res.send(product);
     } else {
@@ -277,7 +277,7 @@ app.patch(
   "/products/:id",
   asyncHandler(async (req, res) => {
     const id = req.params.id;
-    const product = await prisma.product.findById(id);
+    const product = await prisma.product.findUnique(id);
     if (product) {
       Object.keys(req.body).forEach((key) => {
         product[key] = req.body[key];
@@ -294,7 +294,7 @@ app.delete(
   "/products/:id",
   asyncHandler(async (req, res) => {
     const id = Number(req.params.id);
-    const product = await prisma.product.findByIdAndDelete(id);
+    const product = await prisma.product.delete(id);
     if (product) {
       res.sendStatus(204);
     } else {
