@@ -112,8 +112,11 @@ app.get("/products", async (req, res) => {
       select: {
         id: true,
         name: true,
+        description: true,
         price: true,
+        tags: true,
         favoriteCount: true,
+        createdAt: true,
       },
     });
     res.send(products);
@@ -225,6 +228,33 @@ app.get(
     res.send(productComment);
   })
 );
+
+app.get("/article", async (req, res) => {
+  const { sort = "recent", limit, offset = 0, search = "" } = req.query;
+
+  const sortOption = {
+    createdAt: sort === "recent" ? "desc" : "asc",
+  };
+
+  const searchQuery = {
+    OR: [{ content: { contains: search } }, { title: { contains: search } }],
+  };
+
+  const articles = await prisma.article.findMany({
+    where: searchQuery,
+    orderBy: sortOption,
+    take: Number(limit),
+    skip: Number(offset),
+    select: {
+      id: true,
+      content: true,
+      title: true,
+      createdAt: true,
+    },
+  });
+
+  res.send(articles);
+});
 
 app.get(
   "/products/:id",
