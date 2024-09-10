@@ -225,42 +225,17 @@ app.get(
   })
 );
 
-app.get("/products", async (req, res) => {
-  const { sort = "recent", limit, offset = 0, search = "" } = req.query;
-
-  const sortOption = {
-    createdAt: sort === "recent" ? "desc" : "asc",
-  };
-
-  const searchQuery = {
-    OR: [{ name: { contains: search } }, { description: { contains: search } }],
-  };
-
-  const products = await prisma.product.findMany({
-    where: searchQuery,
-    orderBy: sortOption,
-    take: Number(limit),
-    skip: Number(offset),
-    select: {
-      id: true,
-      name: true,
-      price: true,
-      favoriteCount: true,
-    },
-  });
-
-  res.send(products);
-});
-
 app.get(
   "/products/:id",
   asyncHandler(async (req, res) => {
     const id = req.params.id;
-    const product = await prisma.product.findUnique(id);
+    const product = await prisma.product.findUnique({
+      where: { id: Number(id) },
+    });
     if (product) {
       res.send(product);
     } else {
-      res.status(404).send({ message: "Cannot find given id. " });
+      res.status(404).send({ message: "Cannot find given id." });
     }
   })
 );
