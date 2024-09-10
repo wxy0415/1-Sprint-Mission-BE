@@ -92,23 +92,36 @@ app.delete(
 );
 
 // 게시물 목록 조회
-app.get("/products", async (req, res) => {
-  try {
-    const { sort = "recent", limit, offset = 0, search = "" } = req.query;
-    const sortOption = {
-      createdAt: sort === "recent" ? "desc" : "asc",
-    };
+app.get(
+  "/products",
+  asyncHandler(async (req, res) => {
+    const { page, pageSize, order = "recent", keyword = "" } = req.query;
+    let orderBy;
+    switch (order) {
+      case "oldest":
+        orderBy = { createdAt: "asc" };
+        break;
+      case "recent":
+      default:
+        orderBy = { createdAt: "desc" };
+    }
+
     const searchQuery = {
       OR: [
-        { name: { contains: search } },
-        { description: { contains: search } },
+        { name: { contains: keyword } },
+        { description: { contains: keyword } },
       ],
     };
+
+    const pageNum = Number(page) || 1;
+    const pageSizeNum = Number(pageSize) || 10;
+    const skipInt = (pageNum - 1) * pageSizeNum;
+
     const products = await prisma.product.findMany({
       where: searchQuery,
-      orderBy: sortOption,
-      take: Number(limit),
-      skip: Number(offset),
+      orderBy: orderBy,
+      skip: parseInt(skipInt),
+      take: parseInt(pageSizeNum),
       select: {
         id: true,
         name: true,
@@ -119,11 +132,13 @@ app.get("/products", async (req, res) => {
         createdAt: true,
       },
     });
-    res.send(products);
-  } catch (error) {
-    console.error(123123);
-  }
-});
+    const totalCount = await prisma.product.count({
+      where: searchQuery,
+    });
+
+    res.send({ totalCount, products });
+  })
+);
 
 // 게시물 댓글 등록
 app.post(
