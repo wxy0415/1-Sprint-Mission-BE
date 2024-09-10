@@ -232,7 +232,7 @@ app.get(
 app.get(
   "/article",
   asyncHandler(async (req, res) => {
-    const { offset, limit, order = "recent", keyword = "" } = req.query;
+    const { page, pageSize, order = "recent", keyword = "" } = req.query;
 
     let orderBy;
     switch (order) {
@@ -244,24 +244,24 @@ app.get(
         orderBy = { createdAt: "desc" };
     }
 
-    const searchQuery = {
-      OR: [
-        { content: { contains: keyword } },
-        { title: { contains: keyword } },
-      ],
-    };
+    const searchQuery = keyword
+      ? {
+          OR: [
+            { content: { contains: keyword } },
+            { title: { contains: keyword } },
+          ],
+        }
+      : {};
+
+    const pageNum = Number(page) || 1;
+    const pageSizeNum = Number(pageSize) || 6;
+    const skipInt = (pageNum - 1) * pageSizeNum;
 
     const articles = await prisma.article.findMany({
       where: searchQuery,
       orderBy: orderBy,
-      take: Number(limit),
-      skip: Number(offset),
-      select: {
-        id: true,
-        content: true,
-        title: true,
-        createdAt: true,
-      },
+      skip: parseInt(skipInt),
+      take: parseInt(pageSizeNum),
     });
 
     res.send(articles);
