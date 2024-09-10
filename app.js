@@ -301,7 +301,7 @@ app.get(
 app.post(
   "/products",
   asyncHandler(async (req, res) => {
-    const newProduct = await prisma.product.create(req.body);
+    const newProduct = await prisma.product.create({ data: req.body });
     res.status(201).send(newProduct);
   })
 );

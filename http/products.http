@@ -8,6 +8,6 @@ Content-Type: application/json
   "name": "갤럭시 탭 S7",
   "description": "삼성 갤럭시 탭 S7",
   "price": 350000,
-  "favoriteCount": 32,
-  "tags": ["전자제품", "모바일"]
+  "tags": ["전자제품", "모바일"],
+  "favoriteCount": 32
 }
