@@ -229,32 +229,44 @@ app.get(
   })
 );
 
-app.get("/article", async (req, res) => {
-  const { sort = "recent", limit, offset = 0, search = "" } = req.query;
+app.get(
+  "/article",
+  asyncHandler(async (req, res) => {
+    const { offset, limit, order = "recent", keyword = "" } = req.query;
 
-  const sortOption = {
-    createdAt: sort === "recent" ? "desc" : "asc",
-  };
+    let orderBy;
+    switch (order) {
+      case "oldest":
+        orderBy = { createdAt: "asc" };
+        break;
+      case "recent":
+      default:
+        orderBy = { createdAt: "desc" };
+    }
 
-  const searchQuery = {
-    OR: [{ content: { contains: search } }, { title: { contains: search } }],
-  };
+    const searchQuery = {
+      OR: [
+        { content: { contains: keyword } },
+        { title: { contains: keyword } },
+      ],
+    };
 
-  const articles = await prisma.article.findMany({
-    where: searchQuery,
-    orderBy: sortOption,
-    take: Number(limit),
-    skip: Number(offset),
-    select: {
-      id: true,
-      content: true,
-      title: true,
-      createdAt: true,
-    },
-  });
+    const articles = await prisma.article.findMany({
+      where: searchQuery,
+      orderBy: orderBy,
+      take: Number(limit),
+      skip: Number(offset),
+      select: {
+        id: true,
+        content: true,
+        title: true,
+        createdAt: true,
+      },
+    });
 
-  res.send(articles);
-});
+    res.send(articles);
+  })
+);
 
 app.get(
   "/products/:id",
