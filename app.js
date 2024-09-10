@@ -1,5 +1,6 @@
 import express from "express";
 import * as dotenv from "dotenv";
+import cors from "cors";
 import { assert } from "superstruct";
 import { PrismaClient, Prisma } from "@prisma/client";
 import { CreateArticle, PatchArticle } from "./structs.js";
