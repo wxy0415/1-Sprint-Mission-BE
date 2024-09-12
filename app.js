@@ -98,8 +98,8 @@ app.get(
     const { page, pageSize, order = "recent", keyword = "" } = req.query;
     let orderBy;
     switch (order) {
-      case "oldest":
-        orderBy = { createdAt: "asc" };
+      case "fovorite":
+        orderBy = { favoriteCount: "desc" };
         break;
       case "recent":
       default:

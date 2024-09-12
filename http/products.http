@@ -5,9 +5,9 @@ POST https://one-sprint-mission-be-svjo.onrender.com/products
 Content-Type: application/json
 
 {
-  "name": "갤럭시 탭 S7",
-  "description": "삼성 갤럭시 탭 S7",
-  "price": 350000,
+  "name": "아이폰 15",
+  "description": "아이폰 15",
+  "price": 610000,
   "tags": ["전자제품", "모바일"],
-  "favoriteCount": 32
+  "favoriteCount": 52
 }
