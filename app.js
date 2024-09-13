@@ -198,12 +198,16 @@ app.delete(
 
 // 자유게시판 댓글 목록 조회
 app.get(
-  "/comment",
+  "/article/:id/comment",
   asyncHandler(async (req, res) => {
+    const { id } = req.params;
     const { cursor, limit = 5 } = req.query;
     const parsedLimit = parseInt(limit);
 
     const comments = await prisma.comment.findMany({
+      where: {
+        articleId: id,
+      },
       select: {
         id: true,
         content: true,

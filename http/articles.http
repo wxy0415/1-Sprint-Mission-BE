@@ -43,8 +43,8 @@ Content-Type: application/json
 
 ###
 
-GET https://one-sprint-mission-be-svjo.onrender.com/products
+GET https://one-sprint-mission-be-svjo.onrender.com/article
 
 ###
 
-DELETE https://one-sprint-mission-be-svjo.onrender.com/article/c762be88-52be-4a94-b232-68b8333ebb14
+DELETE https://one-sprint-mission-be-svjo.onrender.com/article
