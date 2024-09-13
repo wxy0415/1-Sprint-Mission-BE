@@ -145,11 +145,11 @@ app.post(
   "/comment",
   asyncHandler(async (req, res) => {
     assert(req.body, CreateComment);
-    const { id } = req.params;
+    const { articleId } = req.params;
     const comment = await prisma.comment.create({
       data: {
         ...req.body,
-        articleId: id,
+        articleId: articleId,
       },
     });
     res.status(201).send(comment);

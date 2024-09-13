@@ -36,3 +36,13 @@ Content-Type: application/json
 ###
 
 GET  http://localhost:3000/productcomment
+
+###
+
+POST https://one-sprint-mission-be-svjo.onrender.com/comment
+Content-Type: application/json
+
+{
+  "content": "혹시 사용시간이 어떻게 되실까요?",
+  "articleId": "7dcb6e8d-5394-427b-a107-993a61b198ae"
+}
