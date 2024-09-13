@@ -142,7 +142,7 @@ app.get(
 
 // 게시물 댓글 등록
 app.post(
-  "/article/:id/comment",
+  "/article/:articleId/comment",
   asyncHandler(async (req, res) => {
     assert(req.body, CreateComment);
     const { articleId } = req.params;
