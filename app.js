@@ -142,10 +142,10 @@ app.get(
 
 // 게시물 댓글 등록
 app.post(
-  "/article/:articleId/comment",
+  "/comment",
   asyncHandler(async (req, res) => {
     assert(req.body, CreateComment);
-    const { articleId } = req.params;
+    const { articleId } = req.body;
     const comment = await prisma.comment.create({
       data: {
         ...req.body,

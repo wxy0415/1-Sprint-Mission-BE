@@ -39,7 +39,7 @@ GET  http://localhost:3000/productcomment
 
 ###
 
-POST https://one-sprint-mission-be-svjo.onrender.com/article/7dcb6e8d-5394-427b-a107-993a61b198ae/comment
+POST https://one-sprint-mission-be-svjo.onrender.com/comment
 Content-Type: application/json
 
 {
