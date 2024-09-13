@@ -30,7 +30,7 @@ Content-Type: application/json
 
 {
   "content": "테스트 댓글입니다",
-  "productId": "a7a6b2e3-8d4c-40ec-b5ac-a1dd9ed93e2"
+  "articleId": "a7a6b2e3-8d4c-40ec-b5ac-a1dd9ed93e2"
 }
 
 ###
@@ -39,7 +39,7 @@ GET  http://localhost:3000/productcomment
 
 ###
 
-POST https://one-sprint-mission-be-svjo.onrender.com/comment
+POST https://one-sprint-mission-be-svjo.onrender.com/article/7dcb6e8d-5394-427b-a107-993a61b198ae/comment
 Content-Type: application/json
 
 {
