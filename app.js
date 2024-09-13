@@ -3,7 +3,7 @@ import * as dotenv from "dotenv";
 import cors from "cors";
 import { assert } from "superstruct";
 import { PrismaClient, Prisma } from "@prisma/client";
-import { CreateArticle, PatchArticle } from "./structs.js";
+import { CreateArticle, PatchArticle, CreateComment } from "./structs.js";
 
 dotenv.config();
 const prisma = new PrismaClient();
@@ -142,8 +142,9 @@ app.get(
 
 // 게시물 댓글 등록
 app.post(
-  "/article/:id/comment",
+  "/comment",
   asyncHandler(async (req, res) => {
+    assert(req.body, CreateComment);
     const { id } = req.params;
     const comment = await prisma.comment.create({
       data: {
@@ -173,6 +174,7 @@ app.post(
 app.patch(
   "/comment/:id",
   asyncHandler(async (req, res) => {
+    assert(req.body, CreateComment);
     const { id } = req.params;
     const updateComment = await prisma.comment.update({
       where: { id },
@@ -269,7 +271,7 @@ app.get(
       : {};
 
     const pageNum = Number(page) || 1;
-    const pageSizeNum = Number(pageSize) || 6;
+    const pageSizeNum = Number(pageSize) || 10;
     const skipInt = (pageNum - 1) * pageSizeNum;
 
     const articles = await prisma.article.findMany({

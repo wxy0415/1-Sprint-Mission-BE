@@ -32,15 +32,19 @@ GET http://localhost:3000/article?limit=6&offset=0&order=newest
 
 GET https://one-sprint-mission-be-svjo.onrender.com/article?orderBy=oldest
 ###
+
 POST https://one-sprint-mission-be-svjo.onrender.com/article
 Content-Type: application/json
 
 {
-  "title": "맥북 18인치",
-  "content":
+  "title": "맥북 18인치 32기가 1테라 정도 사양이면 얼마에 팔아야하나요?",
+  "content": ""
 }
 
 ###
 
 GET https://one-sprint-mission-be-svjo.onrender.com/products
 
+###
+
+DELETE https://one-sprint-mission-be-svjo.onrender.com/article/c762be88-52be-4a94-b232-68b8333ebb14
