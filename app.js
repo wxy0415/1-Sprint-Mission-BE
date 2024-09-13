@@ -208,6 +208,7 @@ app.get(
         id: true,
         content: true,
         createdAt: true,
+        articleId: true,
       },
       take: parsedLimit,
       skip: cursor ? 1 : 0,

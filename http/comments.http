@@ -46,3 +46,7 @@ Content-Type: application/json
   "content": "혹시 사용시간이 어떻게 되실까요?",
   "articleId": "a3052b91-73f0-4adf-8473-6b9134ed41cf"
 }
+
+###
+
+GET https://one-sprint-mission-be-svjo.onrender.com/comment
