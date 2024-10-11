@@ -4,10 +4,10 @@ import { PrismaClient } from "@prisma/client";
 import { CreateComment } from "../structs.js";
 import asyncHandler from "../middleware/asyncHandler.js";
 
-const router = express.Router();
+const commentRouter = express.Router();
 const prisma = new PrismaClient();
 
-router.route("/").post(
+commentRouter.route("/").post(
   asyncHandler(async (req, res) => {
     assert(req.body, CreateComment);
     const { articleId } = req.body;
@@ -21,7 +21,7 @@ router.route("/").post(
   })
 );
 
-router
+commentRouter
   .route("/:id")
   .patch(
     asyncHandler(async (req, res) => {
@@ -44,7 +44,7 @@ router
     })
   );
 
-router.route("/article/:id").get(
+commentRouter.route("/article/:id").get(
   asyncHandler(async (req, res) => {
     const { id } = req.params;
     const { cursor, limit = 5 } = req.query;
@@ -72,4 +72,4 @@ router.route("/article/:id").get(
   })
 );
 
-export default router;
+export default commentRouter;

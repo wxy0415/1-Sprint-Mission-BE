@@ -4,10 +4,10 @@ import { PrismaClient } from "@prisma/client";
 import { CreateArticle, PatchArticle } from "../structs.js";
 import asyncHandler from "../middleware/asyncHandler.js";
 
-const router = express.Router();
+const articleRouter = express.Router();
 const prisma = new PrismaClient();
 
-router
+articleRouter
   .route("/")
   .post(
     asyncHandler(async (req, res) => {
@@ -56,7 +56,7 @@ router
     })
   );
 
-router
+articleRouter
   .route("/:id")
   .get(
     asyncHandler(async (req, res) => {
@@ -94,4 +94,4 @@ router
     })
   );
 
-export default router;
+export default articleRouter;

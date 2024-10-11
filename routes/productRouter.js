@@ -2,10 +2,10 @@ import express from "express";
 import { PrismaClient } from "@prisma/client";
 import asyncHandler from "../middleware/asyncHandler.js";
 
-const router = express.Router();
+const productRoutes = express.Router();
 const prisma = new PrismaClient();
 
-router
+productRoutes
   .route("/")
   .get(
     asyncHandler(async (req, res) => {
@@ -60,7 +60,7 @@ router
     })
   );
 
-router
+productRoutes
   .route("/:id")
   .get(
     asyncHandler(async (req, res) => {
@@ -102,4 +102,4 @@ router
     })
   );
 
-export default router;
+export default productRoutes;
